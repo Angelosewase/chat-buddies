@@ -39,7 +39,8 @@ function SignUp() {
       </button>
       <button
         type="button"
-        className="bg-blue-100 text-blue-500 px-2  py-1.5 rounded-lg  "
+        className="bg-blue-100 text-blue-500 px-2 opacity-50  py-1.5 rounded-lg hover:cursor-not-allowed "
+        disabled
       >
         Continue with Google
       </button>
@@ -64,6 +65,8 @@ export const PasswordInput: React.FC<{
     const passwordlength: number = rootState.password.length;
     for (let i = 0; i < passwordlength; i++) {
       hiddenPassword += "*";
+      console.log(hiddenPassword)
+      console.log(rootState.password)
     }
 
     console.log(hiddenPassword);
@@ -77,18 +80,19 @@ export const PasswordInput: React.FC<{
       <div className="flex items-center flex-1 border-2 border-gray-200 rounded px-2 py-1 ">
         <input
           className="flex-1  outline-none"
-          type="text"
+          type={showPassword ? "password":"text"}
           name="password"
           id="password"
           placeholder="Enter your password "
-          value={showPassword ? rootState["password"] : hiddenPassword}
+          value={rootState["password"]}
           onChange={handlePasswordChange}
         />
         <button onClick={handlePasswordVisibilty} type="button">
           {showPassword ? (
-            <EyeSlashIcon className="w-5" />
-          ) : (
             <EyeIcon className="w-5" />
+           
+          ) : (
+            <EyeSlashIcon className="w-5" />
           )}
         </button>
       </div>
