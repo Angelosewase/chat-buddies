@@ -5,7 +5,7 @@ import "./main.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 const routes = createBrowserRouter([
-  { path: "/login", Component: Login },
+  { path: "/", Component: Login },
   { path: "/signup", Component: SignUp },
   { path: "/chat", Component: ChatPage },
 ]);

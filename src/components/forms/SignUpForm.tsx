@@ -1,18 +1,88 @@
 import React, { useState } from "react";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export interface FormData {
   email: string;
   password: string;
+  first_name: string;
+  last_name: string;
 }
 
 function SignUp() {
+
+  const navigate =useNavigate()
   const [formstate, setFormState] = useState<FormData>({
     email: "",
     password: "",
+    first_name: "",
+    last_name: "",
   });
+
+  function submitSignUpForm({
+    formData,
+    e,
+  }: {
+    formData: FormData;
+    e: React.FormEvent<HTMLFormElement>;
+  }) {
+    e.preventDefault();
+  
+    axios
+      .post("http://localhost:8080/user/signUp", {
+        first_name: formData.first_name,
+        last_name: formData.last_name,
+        email: formData.email,
+        password: formData.password,
+      })
+      .then(function (response) {
+          if( response.data === "user created successfully"){
+            navigate("/")
+          }
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    }
+  
   return (
-    <form className="flex  flex-col w-80 gap-4 ">
+    <form
+      className="flex  flex-col w-[340px] gap-3"
+      onSubmit={(e) => submitSignUpForm({ formData: formstate, e: e })}
+    >
+      <div className="flex w-full justify-between ">
+        <label className="flex flex-col   gap-0.5 w-[48%]  p">
+          First name
+          <input
+            className=" border-2 border-gray-200 py-1 px-2    rounded outline-blue-300/50 outline-4 "
+            type="text"
+            name="first_name"
+            id="first_name"
+            placeholder="first name"
+            value={formstate["first_name"]}
+            onChange={(e) =>
+              setFormState({ ...formstate, first_name: e.target.value })
+            }
+          />
+        </label>
+
+        <label className="flex flex-col   gap-0.5  w-[48%] ">
+          First name
+          <input
+            className=" border-2 border-gray-200 py-1 px-2   rounded outline-blue-300/50 outline-4 "
+            type="text"
+            name="last_name"
+            id="last_name"
+            placeholder="last name"
+            value={formstate["last_name"]}
+            onChange={(e) =>
+              setFormState({ ...formstate, last_name: e.target.value })
+            }
+          />
+        </label>
+      </div>
+
       <label className="flex flex-col   gap-0.5">
         Email
         <input
@@ -65,8 +135,8 @@ export const PasswordInput: React.FC<{
     const passwordlength: number = rootState.password.length;
     for (let i = 0; i < passwordlength; i++) {
       hiddenPassword += "*";
-      console.log(hiddenPassword)
-      console.log(rootState.password)
+      console.log(hiddenPassword);
+      console.log(rootState.password);
     }
 
     console.log(hiddenPassword);
@@ -80,7 +150,7 @@ export const PasswordInput: React.FC<{
       <div className="flex items-center flex-1 border-2 border-gray-200 rounded px-2 py-1 ">
         <input
           className="flex-1  outline-none"
-          type={showPassword ? "password":"text"}
+          type={showPassword ? "password" : "text"}
           name="password"
           id="password"
           placeholder="Enter your password "
@@ -90,7 +160,6 @@ export const PasswordInput: React.FC<{
         <button onClick={handlePasswordVisibilty} type="button">
           {showPassword ? (
             <EyeIcon className="w-5" />
-           
           ) : (
             <EyeSlashIcon className="w-5" />
           )}
@@ -99,3 +168,4 @@ export const PasswordInput: React.FC<{
     </>
   );
 };
+
