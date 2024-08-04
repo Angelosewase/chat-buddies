@@ -4,7 +4,7 @@ import { Cog6ToothIcon, PlusIcon } from "@heroicons/react/24/outline";
 
 function Chats() {
   return (
-    <div className="w-[22%]  border-gray-100  shadow-md  pl-4 flex flex-col">
+    <div className="w-[22%]  border-gray-100  shadow-md  pl-4 flex flex-col pt-4">
       <div>
         <HeaderLogo />
       </div>
@@ -41,7 +41,10 @@ const HeaderLogo: React.FC = () => {
 
 const Contacts: React.FC = () => {
   return (
-    <div className="flex-1 ">
+    <div className="flex-1 flex-col flex  gap-2 ">
+      <Contact />
+      <Contact />
+      <Contact />
       <Contact />
     </div>
   );
