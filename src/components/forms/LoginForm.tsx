@@ -1,10 +1,10 @@
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
-import axios from "axios";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import {AppDispatch} from "../../app/store"
+import { AppDispatch } from "../../app/store";
 import { addUser } from "../../app/features/user/userSlice";
+import submitLogInInfo from "../../app/api/authorisation/logIn";
 
 type stateFunction = (updatedFormState: FormData) => void;
 
@@ -14,40 +14,31 @@ interface FormData {
 }
 
 export default function LoginForm() {
-
- const  dispatch=useDispatch<AppDispatch>()
+  const dispatch = useDispatch<AppDispatch>();
   const [formstate, setFormState] = useState<FormData>({
     email: "",
     password: "",
   });
-   const navigate =useNavigate()
-  function submitLogInInfo(
+  const navigate = useNavigate();
+
+  function handleSubmission(
     formData: FormData,
     e: React.FormEvent<HTMLFormElement>
   ) {
-    e.preventDefault();
-    axios
-      .post("http://localhost:8080/user/logIn", {
-        email: formData.email,
-        password: formData.password,
-      },{
-        withCredentials:true
-      })
-      .then((res) => {
-         const  user=res.data
-          if (user){
-              console.log(user)
-               dispatch(addUser(user))
-              navigate("/chat")
-          }
+    const result = submitLogInInfo(formData, e);
 
-      })
-      .catch((err) => console.log(err));
+    if (!result) {
+      return;
+    }
+
+    dispatch(addUser(result));
+    navigate("/chat");
   }
+
   return (
     <form
       className="flex  flex-col w-80 gap-4 "
-      onSubmit={(e) => submitLogInInfo(formstate, e)}
+      onSubmit={(e) => handleSubmission(formstate, e)}
     >
       <label className="flex flex-col   gap-0.5">
         Email
@@ -128,5 +119,3 @@ const PasswordInput: React.FC<{
     </>
   );
 };
-
-

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import submitSignUpForm from "../../app/api/authorisation/signUp";
 
 export interface FormData {
   email: string;
@@ -11,8 +11,7 @@ export interface FormData {
 }
 
 function SignUp() {
-
-  const navigate =useNavigate()
+  const navigate = useNavigate();
   const [formstate, setFormState] = useState<FormData>({
     email: "",
     password: "",
@@ -20,36 +19,26 @@ function SignUp() {
     last_name: "",
   });
 
-  function submitSignUpForm({
+  function handleSubmission({
     formData,
     e,
   }: {
     formData: FormData;
     e: React.FormEvent<HTMLFormElement>;
   }) {
-    e.preventDefault();
-  
-    axios
-      .post("http://localhost:8080/user/signUp", {
-        first_name: formData.first_name,
-        last_name: formData.last_name,
-        email: formData.email,
-        password: formData.password,
-      })
-      .then(function (response) {
-          if( response.data === "user created successfully"){
-            navigate("/")
-          }
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
+    const result = submitSignUpForm({ formData, e });
+
+    if (!result) {
+      return;
     }
-  
+
+    navigate("/");
+  }
+
   return (
     <form
       className="flex  flex-col w-[340px] gap-3"
-      onSubmit={(e) => submitSignUpForm({ formData: formstate, e: e })}
+      onSubmit={(e) => handleSubmission({ formData: formstate, e: e })}
     >
       <div className="flex w-full justify-between ">
         <label className="flex flex-col   gap-0.5 w-[48%]  p">
@@ -168,4 +157,3 @@ export const PasswordInput: React.FC<{
     </>
   );
 };
-
