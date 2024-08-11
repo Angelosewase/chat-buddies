@@ -23,7 +23,10 @@ export const userSlice = createSlice({
   initialState,
   reducers: {
     addUser: (state,payload:PayloadAction<UserState>) => {
-        state = {...payload.payload}
+        state.Email =  payload.payload.Email
+        state.First_name= payload.payload.First_name,
+        state.Id = payload.payload.Id,
+        state.Last_name=payload.payload.Last_name
     },
     RemoveUser: (state) => {
         state.Email =null,

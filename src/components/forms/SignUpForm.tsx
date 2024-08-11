@@ -27,12 +27,12 @@ function SignUp() {
     e: React.FormEvent<HTMLFormElement>;
   }) {
     const result = submitSignUpForm({ formData, e });
-
+    console.log(!result)
     if (!result) {
-      return;
+      navigate("/");
     }
 
-    navigate("/");
+  
   }
 
   return (
@@ -115,20 +115,10 @@ export const PasswordInput: React.FC<{
   setState: stateFunction;
   rootState: FormData;
 }> = ({ setState, rootState }) => {
-  let hiddenPassword: string = "";
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
   function handlePasswordChange(e: React.ChangeEvent<HTMLInputElement>): void {
     setState({ ...rootState, [e.target.name]: e.target.value });
-
-    const passwordlength: number = rootState.password.length;
-    for (let i = 0; i < passwordlength; i++) {
-      hiddenPassword += "*";
-      console.log(hiddenPassword);
-      console.log(rootState.password);
-    }
-
-    console.log(hiddenPassword);
   }
 
   function handlePasswordVisibilty() {

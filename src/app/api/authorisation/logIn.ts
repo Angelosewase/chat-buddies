@@ -5,13 +5,14 @@ interface FormData {
   email: string;
   password: string;
 }
-export default function submitLogInInfo(
+
+export default async function submitLogInInfo(
   formData: FormData,
   e: React.FormEvent<HTMLFormElement>
-): UserState | null {
+): Promise<UserState | null> {  // Return a Promise that resolves to UserState or null
   e.preventDefault();
-  axios
-    .post(
+  try {
+    const res = await axios.post(
       "http://localhost:8080/user/logIn",
       {
         email: formData.email,
@@ -20,17 +21,11 @@ export default function submitLogInInfo(
       {
         withCredentials: true,
       }
-    )
-    .then((res) => {
-      const user = res.data;
-      if (user) {
-        console.log(user);
-        return user;
-      }
-    })
-    .catch((err) => {
-      console.log(err);
-      return null;
-    });
-  return null;
+    );
+    const user: UserState = res.data;
+    return user; // Return the user if successful
+  } catch (err) {
+    console.log(err);
+    return null; // Return null if there's an error
+  }
 }

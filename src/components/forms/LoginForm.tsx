@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { AppDispatch } from "../../app/store";
-import { addUser } from "../../app/features/user/userSlice";
+import { addUser, UserState } from "../../app/features/user/userSlice";
 import submitLogInInfo from "../../app/api/authorisation/logIn";
 
 type stateFunction = (updatedFormState: FormData) => void;
@@ -21,17 +21,26 @@ export default function LoginForm() {
   });
   const navigate = useNavigate();
 
-  function handleSubmission(
+  async function handleSubmission(
     formData: FormData,
     e: React.FormEvent<HTMLFormElement>
   ) {
-    const result = submitLogInInfo(formData, e);
+    const result = await submitLogInInfo(formData, e);
 
     if (!result) {
+      console.log(result);
       return;
     }
 
-    dispatch(addUser(result));
+     const user:UserState={
+      Id:result.Id,
+      Email:result.Email,
+      First_name:result.First_name,
+      Last_name:result.Last_name
+
+     }
+    dispatch(addUser(user));
+    console.log(user)
     navigate("/chat");
   }
 
@@ -77,20 +86,12 @@ const PasswordInput: React.FC<{
   setState: stateFunction;
   rootState: FormData;
 }> = ({ setState, rootState }) => {
-  let hiddenPassword: string = "";
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
   function handlePasswordChange(e: React.ChangeEvent<HTMLInputElement>): void {
     setState({ ...rootState, [e.target.name]: e.target.value });
 
-    const passwordlength: number = rootState.password.length;
-    for (let i = 0; i < passwordlength; i++) {
-      hiddenPassword += "*";
-      console.log(hiddenPassword);
-      console.log(rootState.password);
-    }
 
-    console.log(hiddenPassword);
   }
 
   function handlePasswordVisibilty() {
