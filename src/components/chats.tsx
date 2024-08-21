@@ -1,8 +1,22 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Contact from "./Contact";
 import { Cog6ToothIcon, PlusIcon } from "@heroicons/react/24/outline";
+import { Chat, getChats } from "../app/api/chat/chat";
 
 function Chats() {
+  const [chatstate, setChatState] = useState<Chat[] | null>(null);
+
+  async function getAndUpdatetheChatState() {
+    const chats = await getChats();
+    if (chats) {
+      setChatState(chats);
+      console.log(chats)
+    }
+  }
+  useEffect(() => {
+    getAndUpdatetheChatState();
+  }, []);
+
   return (
     <div className="w-[22%]  border-gray-100  shadow-md  pl-4 flex flex-col pt-4">
       <div>
@@ -42,10 +56,7 @@ const HeaderLogo: React.FC = () => {
 const Contacts: React.FC = () => {
   return (
     <div className="flex-1 flex-col flex  gap-2 ">
-      <Contact />
-      <Contact />
-      <Contact />
-      <Contact />
+      <Contact name="john smith" latestMessage="hello there" time="04:30 pm" />
     </div>
   );
 };
@@ -68,9 +79,8 @@ const Profile: React.FC = () => {
           alt="profile picture"
           className="w-8"
         />
-              <span className="w-2 h-2 rounded-full bg-sky-400 absolute bottom-0 right-0"/>
+        <span className="w-2 h-2 rounded-full bg-sky-400 absolute bottom-0 right-0" />
       </div>
-
 
       <div>
         <p className="text-sm  font-semibold ">Angel</p>
