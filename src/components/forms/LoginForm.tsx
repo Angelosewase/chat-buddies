@@ -40,7 +40,6 @@ export default function LoginForm() {
 
      }
     dispatch(addUser(user));
-    console.log(user)
     navigate("/chat");
   }
 

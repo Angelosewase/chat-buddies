@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Contact from "./Contact";
+import ChatComponent from "./Contact";
 import { Cog6ToothIcon, PlusIcon } from "@heroicons/react/24/outline";
 import { Chat, getChats } from "../app/api/chat/chat";
 
@@ -10,7 +10,6 @@ function Chats() {
     const chats = await getChats();
     if (chats) {
       setChatState(chats);
-      console.log(chats)
     }
   }
   useEffect(() => {
@@ -34,7 +33,7 @@ function Chats() {
           <PlusIcon className="bg-sky-400  text-white h-4" />
         </button>
       </div>
-      <Contacts />
+      {chatstate &&<ChatsComponent chats={chatstate}/>}
       <Menu />
     </div>
   );
@@ -42,24 +41,17 @@ function Chats() {
 
 export default Chats;
 
-const HeaderLogo: React.FC = () => {
-  return (
-    <>
-      <div className="flex gap-4 items-center">
-        <img src="/assets/logo.png" alt="chat buddies logo" className="w-15" />
-        <p className="text-xl font-semibold text-sky-400">Chat buddies</p>
-      </div>
-    </>
-  );
-};
-
-const Contacts: React.FC = () => {
+const ChatsComponent: React.FC<{ chats: Chat[] }> = ({ chats }) => {
   return (
     <div className="flex-1 flex-col flex  gap-2 ">
-      <Contact name="john smith" latestMessage="hello there" time="04:30 pm" />
+        {
+          chats.map((chat,idx)=><ChatComponent chat={chat} key={idx}/>)
+        }
     </div>
   );
 };
+
+//the menu component for multiple options for a user
 
 const Menu: React.FC = () => {
   return (
@@ -69,6 +61,8 @@ const Menu: React.FC = () => {
     </div>
   );
 };
+
+//the profile component
 
 const Profile: React.FC = () => {
   return (
@@ -87,5 +81,17 @@ const Profile: React.FC = () => {
         <p className="text-xs text-gray-400 -mt-1">some details </p>
       </div>
     </div>
+  );
+};
+
+//the header logo
+const HeaderLogo: React.FC = () => {
+  return (
+    <>
+      <div className="flex gap-4 items-center">
+        <img src="/assets/logo.png" alt="chat buddies logo" className="w-15" />
+        <p className="text-xl font-semibold text-sky-400">Chat buddies</p>
+      </div>
+    </>
   );
 };

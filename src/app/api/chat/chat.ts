@@ -4,7 +4,7 @@ export interface Chat {
   id: string;
   createdby: string;
   lastMessage: string;
-  participants: Array<string>;
+  participants: string;
   created_at: Date;
   is_group_chat: boolean;
 }
