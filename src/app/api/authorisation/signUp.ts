@@ -30,7 +30,7 @@ export default function submitSignUpForm({
           }
       })
       .catch(function (error) {
-        console.log(error);
+        (error);
         return null
       });
 

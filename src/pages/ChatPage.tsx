@@ -1,21 +1,27 @@
 import ChatPageLayout from "./ChatPageLayout";
 import ChatComponent from "../components/ChatComponent";
-import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { selectUser } from "../app/features/user/userSlice";
+import { addUser } from "../app/features/user/userSlice";
 import { useEffect } from "react";
+import { isLoggedIn } from "../app/api/authorisation/isLoggedIn";
 
 function ChatPage() {
   const navigate = useNavigate();
-  const user = useSelector(selectUser);
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    if (!user.Email && !user.First_name && !user.Id && !user.Last_name) {
-      navigate("/");
-      console.log("your are unauthorised to access this route")
-    }
-  }, [user, navigate]);
+    async function isAuth() {
+      const user = await isLoggedIn();
 
+      if (!user) {
+        navigate("/");
+        return;
+      }
+      dispatch(addUser(user));
+    }
+    isAuth();
+  }, [navigate,dispatch]);
 
   return (
     <div className="flex h-[100vh] items-center justify-center  border ">

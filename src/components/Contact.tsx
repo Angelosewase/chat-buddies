@@ -24,13 +24,12 @@ function ChatComponent({ chat }: { chat: Chat }) {
 
   useEffect(() => {
     async function fetchUser() {
-      console.log(participantsArray)
       const chatMember = await GetuserById(participantsArray[1]);
       setReturnedUser(chatMember);
     }
 
     fetchUser();
-  }, [participantsArray]);
+  });
 
   return (
     <div className="flex px-2 hover:bg-gray-100 py-1 rounded-l">
