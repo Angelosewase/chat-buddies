@@ -32,6 +32,8 @@ export async function createNewChat(
   try {
     const response = await axios.post("http://localhost:8080/chat/newChat", {
       participants: participants,
+    },{
+      withCredentials:true
     });
 
     const responseMsg: string = response.data;

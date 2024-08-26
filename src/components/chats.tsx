@@ -4,11 +4,18 @@ import {
   Cog6ToothIcon,
   MagnifyingGlassIcon,
   PlusIcon,
+  UserIcon,
 } from "@heroicons/react/24/outline";
-import { Chat, getChats } from "../app/api/chat/chat";
+import { Chat, createNewChat, getChats } from "../app/api/chat/chat";
 import Modal from "react-modal";
-import debounce from 'lodash/debounce';
-import { searchUsers } from "../app/api/users/user";
+import debounce from "lodash/debounce";
+import { searchUsers, user } from "../app/api/users/user";
+import { useDispatch, useSelector } from "react-redux";
+import { selectUser } from "../app/features/user/userSlice";
+import {
+  addSearchUsers,
+  searchUserSelector,
+} from "../app/features/user/searchedUsers";
 
 Modal.setAppElement("#root"); // Recommended for accessibility
 
@@ -80,6 +87,7 @@ const Menu: React.FC = () => {
 //the profile component
 
 const Profile: React.FC = () => {
+  const user: user = useSelector(selectUser);
   return (
     <div className="flex py-3    gap-2  ">
       <div className="relative ">
@@ -92,8 +100,10 @@ const Profile: React.FC = () => {
       </div>
 
       <div>
-        <p className="text-sm  font-semibold ">Angel</p>
-        <p className="text-xs text-gray-400 -mt-1">some details </p>
+        <p className="text-sm  font-semibold ">
+          {user.First_name} {user.Last_name}
+        </p>
+        <p className="text-xs text-gray-400 -mt-1">{user.Email} </p>
       </div>
     </div>
   );
@@ -122,6 +132,8 @@ const AddChatComponent: React.FC = () => {
   const closeModal = (): void => {
     setIsOpen(false);
   };
+
+  const users: user[] = useSelector(searchUserSelector);
   return (
     <>
       <button className="p-2 rounded bg-sky-400 " onClick={openModal}>
@@ -145,8 +157,17 @@ const AddChatComponent: React.FC = () => {
               className="text-xl font-semibold px-2 hover:bg-gray-100 rounded hover:text-red-500"
               onClick={closeModal}
             >
-              X{" "}
+              X
             </button>
+          </div>
+          <div className="py-2 overflow-y-auto h-80">
+            {users ? (
+              users.map((user, idx) => (
+                <SearchUser {...user} closeModal={closeModal} key={idx} />
+              ))
+            ) : (
+              <p className="text-sm text-gray-400">no search history </p>
+            )}
           </div>
         </div>
       </Modal>
@@ -155,9 +176,18 @@ const AddChatComponent: React.FC = () => {
 };
 
 const SearchInput: React.FC = () => {
-  const debouncedSearch = useCallback(debounce((query: string) => {
-    searchUsers(query);
-  }, 3000), []);
+  const dispatch = useDispatch();
+
+  const debouncedSearch = useCallback(
+    debounce((query: string) => {
+      searchUsers(query)
+        .then((data) => {
+          dispatch(addSearchUsers(data));
+        })
+        .catch((err) => console.log(err));
+    }, 2000),
+    [dispatch]
+  );
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     debouncedSearch(e.target.value);
@@ -171,6 +201,58 @@ const SearchInput: React.FC = () => {
         placeholder="search users  by their names "
         onChange={handleSearch}
       />
+    </>
+  );
+};
+
+export interface SearchUserParams extends user {
+  closeModal: () => void;
+}
+
+const SearchUser: React.FC<SearchUserParams> = ({
+  First_name,
+  Last_name,
+  Email,
+  Id,
+  closeModal,
+}) => {
+  const user: user = useSelector(selectUser);
+
+  if (user.Id === Id){
+     return
+  }
+
+  async function handleClick() {
+    try {
+      if (!Id || !user.Id) {
+        return;
+      }
+      const result = await createNewChat([Id, user.Id]);
+      console.log(result);
+    } catch (error) {
+      console.log(error);
+    }
+    closeModal();
+  }
+
+  return (
+    <>
+      <div
+        className="flex px-2 hover:bg-gray-100 rounded py-1 transition-all my-1 hover:cursor-pointer"
+        onClick={handleClick}
+      >
+        <div className=" p-2 bg-gray-100 rounded-full mx-2 ">
+          <UserIcon className="w-6 rounded-full" />
+        </div>
+
+        <div>
+          <div className="flex gap-1 -mb-1">
+            <span className="font-semibold">{First_name} </span>
+            <span className="font-semibold">{Last_name}</span>
+          </div>
+          <p className="text-sm text-gray-400 ">{Email}</p>
+        </div>
+      </div>
     </>
   );
 };
