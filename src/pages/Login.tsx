@@ -1,6 +1,22 @@
+import { useNavigate } from "react-router-dom"
 import LoginForm from "../components/forms/LoginForm"
+import { isLoggedIn } from "../app/api/authorisation/isLoggedIn";
+import { useEffect } from "react";
 
 const Login = () => {
+   const navigate = useNavigate();
+
+   async function CheckIfisLoggedIn() {
+     const user = await isLoggedIn()
+     if(user){
+     navigate("/chat")
+     }
+   }
+   useEffect(()=>{
+      CheckIfisLoggedIn()
+   })
+   isLoggedIn()
+
   return (
     <div className="bg-indigo-950 w-full h-[100vh]  p-10 "> 
      <h1 className="text-2xl  font-semibold  flex items-center gap-2   text-white  ">

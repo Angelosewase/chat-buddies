@@ -8,6 +8,7 @@ import { useSelector } from "react-redux";
 import { selectUser, UserState } from "../app/features/user/userSlice";
 import { GetuserById, user } from "../app/api/users/user";
 import { useEffect, useState } from "react";
+import { IChatBase, message } from "../app/features/chat/chatSlice";
 
 function ChatComponent({ chat }: { chat: Chat }) {
   const [returnedUser, setReturnedUser] = useState<user | null>(null);
@@ -31,8 +32,11 @@ function ChatComponent({ chat }: { chat: Chat }) {
     fetchUser();
   });
 
+//bind the user object(contact) 
+  const handleClick = handleContactComponentClick.bind(returnedUser)
+
   return (
-    <div className="flex px-2 hover:bg-gray-100 py-1 rounded-l">
+    <div className="flex px-2 hover:bg-gray-100 py-1 rounded-l" onClick={handleClick}>
       <UserIcon className="bg-gray-100 rounded-full w-8 h-8 p-1" />
       <div className="flex-1 ml-4">
         <p className="text-sm font-semibold">
@@ -52,3 +56,26 @@ function ChatComponent({ chat }: { chat: Chat }) {
 }
 
 export default ChatComponent;
+
+
+
+ async function handleContactComponentClick(user:u){
+
+// get the user details from the containing  component in the mainted state 
+
+ // get the messages sent between  the users
+ //combine them into the dispalabl format 
+ //dispacth the add chat action 
+ //
+}
+
+
+function changeChatAndMessagesIntoChatBase(chatID:string,  Messages:message[],user:user):IChatBase{
+
+  return{
+   ...user,
+    chatId:chatID,
+    Messages
+  }
+
+}
