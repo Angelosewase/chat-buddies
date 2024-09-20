@@ -28,7 +28,6 @@ export default function LoginForm() {
     const result = await submitLogInInfo(formData, e);
 
     if (!result) {
-      console.log(result);
       return;
     }
 

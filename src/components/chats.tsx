@@ -17,7 +17,7 @@ import {
   addSearchUsers,
   searchUserSelector,
 } from "../app/features/user/searchedUsers";
-import { useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Logout } from "../app/api/authorisation/logout";
 
 Modal.setAppElement("#root");
@@ -79,39 +79,42 @@ const ChatsComponent: React.FC<{ chats: Chat[] }> = ({ chats }) => {
 //the menu component for multiple options for a user
 
 const Menu: React.FC = () => {
- const [showMenu, setShowMenu] = useState<boolean>(false)
- const navigate = useNavigate()
+  const [showMenu, setShowMenu] = useState<boolean>(false);
+  const navigate = useNavigate();
 
-  async function handleClick(){
-  setShowMenu(!showMenu)
+  function handleClick() {
+    setShowMenu(!showMenu);
+  }
 
-   const promise:boolean=   await Logout()
-   if(promise){
-    navigate("/")
-   }
+  async function handleLogout() {
+    setShowMenu(!showMenu);
 
- }
-    
+    const promise: boolean = await Logout();
+    if (promise) {
+      navigate("/");
+    }
+  }
   return (
     <div className="w-full  flex  justify-between items-center pr-3 relative ">
       <Profile />
-      <Cog6ToothIcon className="h-6 "  onClick={handleClick}/>
-      {
-        showMenu && (
-          <div className="absolute bottom-10 right-0 bg-white p-4 flex flex-col shadow-md shadow-gray-200 rounded-md z-10 space-y-4">
-            <div>
-              <XMarkIcon className="w-4 ml-auto" onClick={()=> setShowMenu(false)}/>
-            </div>
-            <button className="w-full ">
-              Edit profile
-            </button>
-            <button className="bg-red-500  rounded hover:scale-110 transition-all text-white py-1 px-2">
-              Logout
-            </button>
+      <Cog6ToothIcon className="h-6 " onClick={handleClick} />
+      {showMenu && (
+        <div className="absolute bottom-10 right-0 bg-white p-4 flex flex-col shadow-md shadow-gray-200 rounded-md z-10 space-y-4">
+          <div>
+            <XMarkIcon
+              className="w-4 ml-auto"
+              onClick={() => setShowMenu(false)}
+            />
           </div>
-
-        )
-      }
+          <button className="w-full ">Edit profile</button>
+          <button
+            onClick={handleLogout}
+            className="bg-red-500  rounded hover:scale-110 transition-all text-white py-1 px-2"
+          >
+            Logout
+          </button>
+        </div>
+      )}
     </div>
   );
 };
@@ -249,7 +252,7 @@ const SearchUser: React.FC<SearchUserParams> = ({
   closeModal,
 }) => {
   const user: user = useSelector(selectUser);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   if (String(user.Id) === String(Id)) {
     return;
   }
@@ -260,7 +263,7 @@ const SearchUser: React.FC<SearchUserParams> = ({
         return;
       }
       const result = await createNewChat([Id, user.Id]);
-      navigate("/chat")
+      navigate("/chat");
       console.log(result);
     } catch (error) {
       console.log(error);

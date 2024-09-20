@@ -1,10 +1,24 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { user } from "../../api/users/user";
-import type { RootState } from '../../store'
+import type { RootState } from "../../store";
+
+enum messageType {
+  "text",
+  "message",
+  "video",
+  "file",
+}
 
 export interface message {
-  time: Date;
-  textContent: string;
+  id: string;
+  chat_id: string;
+  sender_id: string;
+  receiver_id: string;
+  content: string;
+  content_type: messageType;
+  created_at: Date;
+  updated_at: Date;
+  is_deleted: boolean;
 }
 
 export interface IChatBase extends user {
@@ -33,16 +47,12 @@ export const chatSlice = createSlice({
       }
       return state;
     },
-
-
   },
 });
-  
-export const selectChat =(state: RootState)=>state.chat;
-export const {addChat}= chatSlice.actions
+
+export const selectChat = (state: RootState) => state.chat;
+export const { addChat } = chatSlice.actions;
 export default chatSlice.reducer;
-
-
 
 function validateChatObject(object: IChatBase): boolean {
   if (
