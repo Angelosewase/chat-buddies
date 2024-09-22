@@ -8,5 +8,5 @@ export function removeLoggedInUserFromChatParticipantsArray(
   userId: string
 ): string[] {
     if(userId === "")return []
-    return participantsArray.filter(participant => participant !== userId);
+    return participantsArray.filter(participant => participant !== userId);_
 }

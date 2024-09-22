@@ -13,7 +13,6 @@ export interface message {
   id: string;
   chat_id: string;
   sender_id: string;
-  receiver_id: string;
   content: string;
   content_type: messageType;
   created_at: Date;
@@ -60,7 +59,6 @@ function validateChatObject(object: IChatBase): boolean {
     !object.Id ||
     !object.First_name ||
     !object.Last_name ||
-    !object.Messages ||
     !object.chatId
   ) {
     return false;

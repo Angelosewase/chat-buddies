@@ -4,23 +4,45 @@ import {
   parseDatabaseParticipantsString,
   removeLoggedInUserFromChatParticipantsArray,
 } from "../app/utils/chat";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { selectUser, UserState } from "../app/features/user/userSlice";
 import { GetuserById, user } from "../app/api/users/user";
 import { useEffect, useState } from "react";
-// import { IChatBase, message } from "../app/features/chat/chatSlice";
+import { addChat, IChatBase, message} from "../app/features/chat/chatSlice";
 
 function ChatComponent({ chat }: { chat: Chat }) {
   const [returnedUser, setReturnedUser] = useState<user | null>(null);
-
   const loggedInUser: UserState = useSelector(selectUser);
 
   let participantsArray = parseDatabaseParticipantsString(chat.participants);
-
   participantsArray = removeLoggedInUserFromChatParticipantsArray(
     participantsArray,
     loggedInUser.Id || ""
   );
+
+  const dispatch = useDispatch();
+
+  async function handleContactComponentClick(
+    user: user | null,
+    chatID: string
+  ) {
+    if (!user) {
+
+      return;
+    }
+  
+  
+    // get the messages sent between  the users
+    //assume that there are no messages
+    //combine them into the dispalabl format
+    const chat: IChatBase = changeChatAndMessagesIntoChatBase(
+      chatID,
+      null,
+      user
+    );
+    //dispacth the add chat action
+    dispatch(addChat(chat));
+  }
 
   useEffect(() => {
     async function fetchUser() {
@@ -36,7 +58,7 @@ function ChatComponent({ chat }: { chat: Chat }) {
   return (
     <div
       className="flex px-2 hover:bg-gray-100 py-1 rounded-l"
-      onClick={() => handleContactComponentClick(returnedUser)}
+      onClick={() => handleContactComponentClick(returnedUser, chat.id)}
     >
       <UserIcon className="bg-gray-100 rounded-full w-8 h-8 p-1" />
       <div className="flex-1 ml-4">
@@ -63,26 +85,14 @@ function ChatComponent({ chat }: { chat: Chat }) {
 
 export default ChatComponent;
 
-async function handleContactComponentClick(user: user | null) {
-  if (!user) {
-    return;
-  }
-   
-  // get the messages sent between  the users
-
-  //combine them into the dispalabl format
-  //dispacth the add chat action
-  //
+function changeChatAndMessagesIntoChatBase(
+  chatID: string,
+  Messages: message[] | null,
+  user: user
+): IChatBase {
+  return {
+    ...user,
+    chatId: chatID,
+    Messages,
+  };
 }
-
-// function changeChatAndMessagesIntoChatBase(
-//   chatID: string,
-//   Messages: message[],
-//   user: user
-// ): IChatBase {
-//   return {
-//     ...user,
-//     chatId: chatID,
-//     Messages,
-//   };
-// }
