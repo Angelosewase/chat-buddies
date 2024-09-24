@@ -11,9 +11,15 @@ export interface Chat {
 
 export async function getChats(): Promise<Array<Chat> | null> {
   try {
-    const response = await axios.get("http://localhost:8080/chat/chats",{withCredentials:true});
+    const response = await axios.get("http://localhost:8080/chat/chats", {
+      withCredentials: true,
+    });
+    const response2 = await axios.get(
+      "http://localhost:8080/chat/ChatsParticipatingIn",
+      { withCredentials: true }
+    );
 
-    const chats: Array<Chat> = response.data;
+    const chats: Array<Chat> = [...response.data, ...response2.data];
 
     if (chats.length > 0) {
       return chats;
@@ -30,11 +36,15 @@ export async function createNewChat(
   participants: string[]
 ): Promise<string | null> {
   try {
-    const response = await axios.post("http://localhost:8080/chat/newChat", {
-      participants: participants,
-    },{
-      withCredentials:true
-    });
+    const response = await axios.post(
+      "http://localhost:8080/chat/newChat",
+      {
+        participants: participants,
+      },
+      {
+        withCredentials: true,
+      }
+    );
 
     const responseMsg: string = response.data;
     return responseMsg;

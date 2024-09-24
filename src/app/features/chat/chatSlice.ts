@@ -46,11 +46,23 @@ export const chatSlice = createSlice({
       }
       return state;
     },
+    addMessages: (
+      hookState: IChatBase,
+      payload: PayloadAction<message[] | null>
+    ) => {
+      if (payload.payload) {
+        const stateCopy = hookState;
+        stateCopy.Messages = payload.payload;
+        return { ...stateCopy };
+      }
+
+      return hookState;
+    },
   },
 });
 
 export const selectChat = (state: RootState) => state.chat;
-export const { addChat } = chatSlice.actions;
+export const { addChat, addMessages } = chatSlice.actions;
 export default chatSlice.reducer;
 
 function validateChatObject(object: IChatBase): boolean {

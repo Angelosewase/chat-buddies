@@ -9,6 +9,7 @@ import { selectUser, UserState } from "../app/features/user/userSlice";
 import { GetuserById, user } from "../app/api/users/user";
 import { useEffect, useState } from "react";
 import { addChat, IChatBase, message} from "../app/features/chat/chatSlice";
+import getMessages from "../app/api/message";
 
 function ChatComponent({ chat }: { chat: Chat }) {
   const [returnedUser, setReturnedUser] = useState<user | null>(null);
@@ -30,14 +31,12 @@ function ChatComponent({ chat }: { chat: Chat }) {
 
       return;
     }
-  
-  
-    // get the messages sent between  the users
-    //assume that there are no messages
+
+    const messages = await getMessages(chatID)
     //combine them into the dispalabl format
     const chat: IChatBase = changeChatAndMessagesIntoChatBase(
       chatID,
-      null,
+      messages,
       user
     );
     //dispacth the add chat action
@@ -73,12 +72,12 @@ function ChatComponent({ chat }: { chat: Chat }) {
         </p>
       </div>
 
-      <div>
+      {/* <div>
         <p className="text-sm text-gray-400 font-mono -mb-1">time</p>
         <span className="bg-blue-500 text-xs text-white font-semibold px-1 -py-0.5 rounded-full">
           1
         </span>
-      </div>
+      </div> */}
     </div>
   );
 }
