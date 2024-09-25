@@ -39,5 +39,6 @@ export const userSlice = createSlice({
 
 export const {addUser,RemoveUser } = userSlice.actions
 export const selectUser = (state: RootState) => state.user
+export const selectTheUserID = (state:RootState)=>state.user.Id
 
 export default userSlice.reducer

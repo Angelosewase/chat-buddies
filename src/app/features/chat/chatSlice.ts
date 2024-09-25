@@ -3,10 +3,10 @@ import { user } from "../../api/users/user";
 import type { RootState } from "../../store";
 
 enum messageType {
-  "text",
-  "message",
-  "video",
-  "file",
+  text,
+  message,
+  video,
+  file,
 }
 
 export interface message {
@@ -38,31 +38,38 @@ export const chatSlice = createSlice({
   name: "chat",
   initialState,
   reducers: {
-    addChat: (state: IChatBase, payload: PayloadAction<IChatBase>) => {
-      const isValid = validateChatObject(payload.payload);
+    addChat: (state: IChatBase, action: PayloadAction<IChatBase>) => {
+      const isValid = validateChatObject(action.payload);
 
       if (isValid) {
-        return payload.payload;
+        return action.payload;
       }
       return state;
     },
-    addMessages: (
-      hookState: IChatBase,
-      payload: PayloadAction<message[] | null>
-    ) => {
-      if (payload.payload) {
-        const stateCopy = hookState;
-        stateCopy.Messages = payload.payload;
-        return { ...stateCopy };
+    addMessages: (state: IChatBase, action: PayloadAction<message[] | null>) => {
+      if (action.payload) {
+        return {
+          ...state,
+          Messages: action.payload,
+        };
       }
 
-      return hookState;
+      return state;
+    },
+    addMessage: (state: IChatBase, action: PayloadAction<message | null>) => {
+      if (action.payload) {
+        return {
+          ...state,
+          Messages: state.Messages ? [...state.Messages, action.payload] : [action.payload],
+        };
+      }
+      return state;
     },
   },
 });
 
 export const selectChat = (state: RootState) => state.chat;
-export const { addChat, addMessages } = chatSlice.actions;
+export const { addChat, addMessages ,addMessage} = chatSlice.actions;
 export default chatSlice.reducer;
 
 function validateChatObject(object: IChatBase): boolean {

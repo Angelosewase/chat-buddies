@@ -68,3 +68,18 @@ export async function DeleteChat(chatId: string): Promise<string | null> {
     return null;
   }
 }
+
+export async function GetChat(chatId: string): Promise<Chat | null> {
+  try {
+    const response = await axios.get("http://localhost:8080/chat", {
+      withCredentials: true,
+      params: {
+        chat_id: chatId,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+}

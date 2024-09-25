@@ -8,40 +8,32 @@ import { useDispatch, useSelector } from "react-redux";
 import { selectUser, UserState } from "../app/features/user/userSlice";
 import { GetuserById, user } from "../app/api/users/user";
 import { useEffect, useState } from "react";
-import { addChat, IChatBase, message} from "../app/features/chat/chatSlice";
+import { addChat, IChatBase, message } from "../app/features/chat/chatSlice";
 import getMessages from "../app/api/message";
 
 function ChatComponent({ chat }: { chat: Chat }) {
   const [returnedUser, setReturnedUser] = useState<user | null>(null);
-  const loggedInUser: UserState = useSelector(selectUser);
-
-  let participantsArray = parseDatabaseParticipantsString(chat.participants);
-  participantsArray = removeLoggedInUserFromChatParticipantsArray(
-    participantsArray,
-    loggedInUser.Id || ""
-  );
-
   const dispatch = useDispatch();
 
-  async function handleContactComponentClick(
-    user: user | null,
-    chatID: string
-  ) {
-    if (!user) {
+  const loggedInUser: UserState = useSelector(selectUser);
+  let participantsArray = parseDatabaseParticipantsString(chat.participants);
+  participantsArray = removeLoggedInUserFromChatParticipantsArray(participantsArray,loggedInUser.Id || "");
 
+  
+
+  async function handleContactComponentClick(user: user | null,chatID: string) {
+    if (!user) {
       return;
     }
-
-    const messages = await getMessages(chatID)
-    //combine them into the dispalabl format
+    const messages = await getMessages(chatID);
     const chat: IChatBase = changeChatAndMessagesIntoChatBase(
       chatID,
       messages,
       user
     );
-    //dispacth the add chat action
     dispatch(addChat(chat));
   }
+  
 
   useEffect(() => {
     async function fetchUser() {
@@ -83,6 +75,9 @@ function ChatComponent({ chat }: { chat: Chat }) {
 }
 
 export default ChatComponent;
+
+
+
 
 function changeChatAndMessagesIntoChatBase(
   chatID: string,
