@@ -12,7 +12,7 @@
 //     const user: UserState = response.data;
 //     return user;
 //   } catch (error) {
-//     console.log(error);
+
 //     return null;
 //   }
 // }

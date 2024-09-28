@@ -21,7 +21,7 @@ export function initializeWebSocketServerConnection(UserId: string): WebSocket {
     try {
       // Parse the incoming message
       const messageData: IMessageBase = JSON.parse(msg.data);
-
+      console.log(messageData);
       // Update the UI or dispatch action based on chat_id
       await updateTheUi(messageData.chat_id);
     } catch (error) {
@@ -41,28 +41,20 @@ export function initializeWebSocketServerConnection(UserId: string): WebSocket {
 }
 
 export async function SendMessage(msg: IMessageBase, WsConn: WebSocket) {
+  console.log("forwarding the update state to the update ui func");
   if (WsConn.readyState == WebSocket.OPEN) {
     const messageString = JSON.stringify(msg);
     WsConn.send(messageString);
-
-    try {
-      const messages = await getMessages(msg.chat_id);
-      if (!messages) {
-        console.warn("No messages found for chat", msg.chat_id);
-        return;
-      }
-
-      // Dispatch messages to the store
-      store.dispatch(addMessages(messages));
-    } catch (error) {
-      console.error("Error updating the UI with messages", error);
-    }
-  } else {
-    console.log("not connected to the server");
+    setTimeout(async() => {
+      await updateTheUi(msg.chat_id);
+    }, 2000);
+    // await updateTheUi(msg.chat_id);
   }
 }
 
 export async function updateTheUi(chatId: string) {
+  console.log("updating the ui ......");
+
   try {
     const messages = await getMessages(chatId);
     if (!messages) {

@@ -6,8 +6,6 @@ const MessagesComponent: React.FC<{
   messages: message[] | null;
   userId: string;
 }> = ({ messages = [], userId }) => {
-  console.log("messages: ", messages);
-  console.log("user id", userId);
   if (!messages || userId == "") {
     return (
       <>
@@ -23,9 +21,9 @@ const MessagesComponent: React.FC<{
       {messages &&
         messages?.map((message) =>
           message.sender_id === userId ? (
-            <SentMessage {...message} />
+            <SentMessage {...message}  key={message.id}/>
           ) : (
-            <ReceivedMessage {...message} />
+            <ReceivedMessage {...message} key={message.id} />
           )
         )}
     </div>

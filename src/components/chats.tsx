@@ -262,9 +262,9 @@ const SearchUser: React.FC<SearchUserParams> = ({
       if (!Id || !user.Id) {
         return;
       }
-      const result = await createNewChat([Id, user.Id]);
+       await createNewChat([Id, user.Id]);
       navigate("/chat");
-      console.log(result);
+
     } catch (error) {
       console.log(error);
     }

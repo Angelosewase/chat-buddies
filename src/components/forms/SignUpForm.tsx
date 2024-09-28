@@ -27,7 +27,6 @@ function SignUp() {
     e: React.FormEvent<HTMLFormElement>;
   }) {
     const result = submitSignUpForm({ formData, e });
-    console.log(!result)
     if (!result) {
       navigate("/");
     }

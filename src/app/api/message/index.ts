@@ -9,8 +9,6 @@ export default async function getMessages(chatId:string ): Promise<message[] | n
         chatID:chatId,
       }
     });
-    console.log(response.data)
-
     return response.data;
   } catch (error) {
     console.log(error);
